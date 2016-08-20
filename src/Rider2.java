@@ -32,6 +32,7 @@ if (bf != null){
 
 while (charRead != -1 && (char)charRead!=' '){
 charRead = bf.read();
+char charReadForDebug=(char)charRead;
 ++ncol;
 if((char)charRead=='\n'){
  ncol=0;
@@ -44,9 +45,12 @@ if(re.test(String.valueOf((char)charRead),"^\\d+$") ||re.test(String.valueOf((ch
     //...
 }
 //<принадлежит  к Индификатору >
-else if(re.test(String.valueOf((char)charRead),"^\\w+$") ){
+else if(re.test(String.valueOf((char)charRead),"[a-z]") ){
     //...
 }
+//else if((char)charRead==' '){
+    //...
+//}
 else {
 		switch ((char)charRead) {
 		case '+':  break;
@@ -55,11 +59,12 @@ else {
 		case '/':   break;
 		case '(':   break;
 		case ')':   break;
-		default:  error("Invalid character"); break;
+                default :error("Invalid character");
 		}
 	}
+
 }
-}
+    }
     }
 catch(IOException ioEx){
 System.err.println("Oshibka chteniya faila["+ioEx+"]");
