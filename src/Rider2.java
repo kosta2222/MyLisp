@@ -9,13 +9,15 @@ int nline;
 int ntok;
 FileRider fr;
 BufferedReader bf;
+RegExp re;
 
     public Rider2() {
         ncol=0;
         nline=1;
         ntok=0;
-        File f=new File("input.txt");
-        fr=new FileRider(f,"cp-1251");
+        File f=new File("D:\\NetBeansProjects\\A_MyLisp\\src\\input.txt");
+        fr=new FileRider(f,"cp1251");
+        re=new RegExp();
         
     }
   public  void error(String msg) {
@@ -28,29 +30,31 @@ BufferedReader bf;
     try{
 if (bf != null){
 
-while (charRead != -1 && charRead==' '){
+while (charRead != -1 && (char)charRead!=' '){
 charRead = bf.read();
 ++ncol;
-if(charRead=='\n'){
+if((char)charRead=='\n'){
  ncol=0;
  ++nline;
 }
 /* Запомним позицию текущей лексемы */
 	ntok = ncol;
-if(charRead <принадлежит к Числу,Дабл > ){
+        // <принадлежит к Числу,Дабл >
+if(re.test(String.valueOf((char)charRead),"^\\d+$") ||re.test(String.valueOf((char)charRead),"^\\d+\\.\\d+$")){
     //...
 }
-else if(charRead <принадлежит к Индификатору > ){
+//<принадлежит  к Индификатору >
+else if(re.test(String.valueOf((char)charRead),"^\\w+$") ){
     //...
 }
 else {
-		switch (charRead) {
-		case '+': sym = T_ADD; break;
-		case '-':  sym = T_SUB; break;
-		case '*':  sym = T_MUL; break;
-		case '/':  sym = T_DIV; break;
-		case '(':  sym = T_LPAREN; break;
-		case ')':  sym = T_RPAREN; break;
+		switch ((char)charRead) {
+		case '+':  break;
+		case '-':  break;
+		case '*':   break;
+		case '/':   break;
+		case '(':   break;
+		case ')':   break;
 		default:  error("Invalid character"); break;
 		}
 	}
@@ -72,3 +76,9 @@ System.err.println("Oshibka zakritiya faila["+ioEx+"]");
 }
  }
     
+class Program  {
+public static void main(String args[]){
+Rider2 r=new Rider2();
+r.readSymbolAndRecogniseIt();
+}
+}
