@@ -6,14 +6,20 @@ import java.io.IOException;
 //[/packages]
 /////////////
 //////////////
+
 //[class Node]
-class Node{
+/*Класс Node
+  Что за класс:Должен хранит абстрактное синтаксическое дерево
+  Дата:21 08 16
+*/
+ class Node{
     private String kind;
     private String value;
     private String op1;
     private String op2;
     private String op3;
-
+/*конструктор
+*/
     public Node() {
         
     }
@@ -94,15 +100,19 @@ class Node{
 ///////////////
 ////////////////
 //[class Rider]
-class Rider2{
+public class Rider2{
+// колонка   
 int ncol;
+//строка
 int nline;
+//позиция символ в колонке
 int ntok;
 String sym;
 
 RegExp re;
 
-
+/*конструктор
+*/
     public Rider2() {
         ncol=0;
         nline=1;
@@ -111,11 +121,23 @@ RegExp re;
         re=new RegExp();
         
     }
+//    @param msg String
+//    @return void
+//    Выводит сообщение о синтаксической ошибке в строке и колонке
   public  void error(String msg) {
 	     System.out.println("!Syntax Parse error");
 	System.out.printf("Error at (%d: %d): %s\n", nline, ntok, msg);
   }
-  
+/*@param String lispExpression
+  @return void
+  Что делает:получает на вход строку прочитанную из фаила.
+	Посимвольно разбирает строку.Засекает номер строки и позицию символа чтобы
+	сообщить об ошибке.Определяет относиться ли символ к индификаторам(Англ заглавные буквы),
+	к числу инт,дабл или к матем.операциям или скобки.Если символ не подходит -сообщение об
+	ошибке,метод error()
+	
+	 
+*/  
     public void readSymbolAndRecogniseIt(String lispExpression){
         
  char charRead='\0';         
@@ -136,7 +158,7 @@ if(re.test(String.valueOf(charRead),"^\\d+$") ||re.test(String.valueOf(charRead)
     //...
 }
 //<принадлежит  к Индификатору >
-else if(re.test(String.valueOf(charRead),"[a-z]") ){
+else if(re.test(String.valueOf(charRead),"[A-Z]") ){
     //...
 }
 else if(charRead==' '){
@@ -163,7 +185,7 @@ else {
 
 ///////////////
 //[class Solve]
-class Solve  {
+ class Solve  {
     public Solve(){
     File f=new File("D:\\NetBeansProjects\\A_MyLisp\\src\\input.txt");
     FileRider fr=new FileRider(f,"cp1251");;
