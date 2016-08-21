@@ -86,6 +86,7 @@ try{
 String line=bf.readLine();
 while(line!=null){
     r.readSymbolAndRecogniseIt(line);
+    line=bf.readLine();
     
    
 }
