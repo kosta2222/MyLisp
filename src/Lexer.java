@@ -100,7 +100,7 @@ import java.io.IOException;
 ///////////////
 ////////////////
 //[class Rider]
-public class Rider2{
+public class Lexer{
 // колонка   
 int ncol;
 //строка
@@ -113,14 +113,24 @@ RegExp re;
 
 /*конструктор
 */
-    public Rider2() {
+    public Lexer() {
         ncol=0;
-        nline=1;
+        //nline=1;
         ntok=0;
         
         re=new RegExp();
         
     }
+    public boolean isOp(char ch){
+     switch (ch) {
+		case '+':  return true;
+		case '-':  return true;
+		case '*':  return  true;
+		case '/':  return true;
+		case '(':  return true;
+		case ')':  return true;   
+    }
+   return false; }
 //    @param msg String
 //    @return void
 //    Выводит сообщение о синтаксической ошибке в строке и колонке
@@ -138,13 +148,14 @@ RegExp re;
 	
 	 
 */  
-    public void readSymbolAndRecogniseIt(String lispExpression){
-        
+    public void readSymbolAndRecogniseAndSetId(String lispExpression,int nline){
+ this.nline=nline;       
  char charRead='\0';         
   
 
 
-for (int i=0;i<lispExpression.length();i++){
+charRead = lispExpression.charAt(0);
+for(int i=0;i<lispExpression.length();i++){
 charRead = lispExpression.charAt(i);
 ++ncol;
 if((char)charRead=='\n'){
@@ -154,28 +165,30 @@ if((char)charRead=='\n'){
 /* Запомним позицию текущей лексемы */
 	ntok = ncol;
         // <принадлежит к Числу,Дабл >
+        if(re.test(String.valueOf(charRead),"^\\d") ||re.test(String.valueOf(charRead),"\\.") || re.test(String.valueOf(charRead),"[A-Z]") || re.test(String.valueOf(charRead),"[a-z]") || (charRead==' ') ||isOp(charRead) ){
 if(re.test(String.valueOf(charRead),"^\\d+$") ||re.test(String.valueOf(charRead),"^\\d+\\.\\d+$")){
-    //...
+  
+    
 }
 //<принадлежит  к Индификатору >
 else if(re.test(String.valueOf(charRead),"[A-Z]") ){
     //...
+    
+}
+else if(re.test(String.valueOf(charRead),"[a-z]\\!") ){
+    //...
+    
+   
 }
 else if(charRead==' '){
     //...
- i++;
+ 
 }
-else {
-		switch (charRead) {
-		case '+':  break;
-		case '-':  break;
-		case '*':   break;
-		case '/':   break;
-		case '(':   break;
-		case ')':   break;
-                default :error("Invalid character");
-		}
-	}
+else if(isOp(charRead)){
+    
+}
+        
+        }else error("Invalid character");
 
 }
 }    
@@ -190,13 +203,15 @@ else {
     File f=new File("D:\\NetBeansProjects\\A_MyLisp\\src\\input.txt");
     FileRider fr=new FileRider(f,"cp1251");;
 BufferedReader bf=fr.getBuffered_reader();
-     Rider2 r=new Rider2();
+     Lexer r=new Lexer();
 
 try{
+    int i=1;
 String line=bf.readLine();
 while(line!=null){
-    r.readSymbolAndRecogniseIt(line);
+    r.readSymbolAndRecogniseAndSetId(line,i);
     line=bf.readLine();
+    i++;
 }
 
 }catch(IOException ioEx){
