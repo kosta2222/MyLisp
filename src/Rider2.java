@@ -7,16 +7,15 @@ class Rider2{
 int ncol;
 int nline;
 int ntok;
-FileRider fr;
-BufferedReader bf;
+
 RegExp re;
+
 
     public Rider2() {
         ncol=0;
         nline=1;
         ntok=0;
-        File f=new File("D:\\NetBeansProjects\\A_MyLisp\\src\\input.txt");
-        fr=new FileRider(f,"cp1251");
+        
         re=new RegExp();
         
     }
@@ -24,15 +23,16 @@ RegExp re;
 	     System.out.println("!Syntax Parse error");
 	System.out.printf("Error at (%d: %d): %s\n", nline, ntok, msg);
   }
-    public void readSymbolAndRecogniseIt(){
-        bf=fr.getBuffered_reader();
- int charRead=0;         
-    try{
-if (bf != null){
+  
+    public void readSymbolAndRecogniseIt(String lispExpression){
+        
+ char charRead='\0';         
+  
 
-while (charRead != -1 && (char)charRead!=' '){
-charRead = bf.read();
-char charReadForDebug=(char)charRead;
+int i=0;
+charRead = lispExpression.charAt(i);
+while (i<lispExpression.length() && charRead!=' '){
+charRead = lispExpression.charAt(i);
 ++ncol;
 if((char)charRead=='\n'){
  ncol=0;
@@ -41,18 +41,18 @@ if((char)charRead=='\n'){
 /* Запомним позицию текущей лексемы */
 	ntok = ncol;
         // <принадлежит к Числу,Дабл >
-if(re.test(String.valueOf((char)charRead),"^\\d+$") ||re.test(String.valueOf((char)charRead),"^\\d+\\.\\d+$")){
+if(re.test(String.valueOf(charRead),"^\\d+$") ||re.test(String.valueOf(charRead),"^\\d+\\.\\d+$")){
     //...
 }
 //<принадлежит  к Индификатору >
-else if(re.test(String.valueOf((char)charRead),"[a-z]") ){
+else if(re.test(String.valueOf(charRead),"[a-z]") ){
     //...
 }
 //else if((char)charRead==' '){
     //...
 //}
 else {
-		switch ((char)charRead) {
+		switch (charRead) {
 		case '+':  break;
 		case '-':  break;
 		case '*':   break;
@@ -62,28 +62,42 @@ else {
                 default :error("Invalid character");
 		}
 	}
+i++;
 
 }
-    }
-    }
-catch(IOException ioEx){
-System.err.println("Oshibka chteniya faila["+ioEx+"]");
-
-}
+    
         
-try{bf.close();
+    
+        
 
-}catch(IOException ioEx){
-System.err.println("Oshibka zakritiya faila["+ioEx+"]");
-   
 }    
 
 }
- }
+ 
     
-class Program  {
-public static void main(String args[]){
-Rider2 r=new Rider2();
-r.readSymbolAndRecogniseIt();
+class Solve  {
+    public Solve(){
+    File f=new File("D:\\NetBeansProjects\\A_MyLisp\\src\\input.txt");
+    FileRider fr=new FileRider(f,"cp1251");;
+BufferedReader bf=fr.getBuffered_reader();
+     Rider2 r=new Rider2();
+
+try{
+String line=bf.readLine();
+while(line!=null){
+    r.readSymbolAndRecogniseIt(line);
+    
+   
+}
+
+}catch(IOException ioEx){
+    System.out.println("Oshibka chteniya stroki iz faila["+ioEx+"]");
 }
 }
+}
+class Program{
+    public static void main(String[] args) {
+        new Solve();
+    }
+}
+
