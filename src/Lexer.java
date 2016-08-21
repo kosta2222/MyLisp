@@ -114,9 +114,9 @@ RegExp re;
 /*конструктор
 */
     public Lexer() {
-        ncol=0;
+        //ncol=0;
         //nline=1;
-        ntok=0;
+        //ntok=0;
         
         re=new RegExp();
         
@@ -149,9 +149,9 @@ RegExp re;
 	 
 */  
     public void readSymbolAndRecogniseAndSetId(String lispExpression,int nline){
- this.nline=nline;       
+       
  char charRead='\0';         
-  
+  int ncol=0,ntok;
 
 
 charRead = lispExpression.charAt(0);
@@ -165,7 +165,7 @@ if((char)charRead=='\n'){
 /* Запомним позицию текущей лексемы */
 	ntok = ncol;
         // <принадлежит к Числу,Дабл >
-        if(re.test(String.valueOf(charRead),"^\\d") ||re.test(String.valueOf(charRead),"\\.") || re.test(String.valueOf(charRead),"[A-Z]") || re.test(String.valueOf(charRead),"[a-z]") || (charRead==' ') ||isOp(charRead) ){
+        if(re.test(String.valueOf(charRead),"\\d") ||re.test(String.valueOf(charRead),"\\d") || re.test(String.valueOf(charRead),"[A-Z]") || re.test(String.valueOf(charRead),"[a-z]") || (charRead==' ') ||isOp(charRead) ){
 if(re.test(String.valueOf(charRead),"^\\d+$") ||re.test(String.valueOf(charRead),"^\\d+\\.\\d+$")){
   
     
@@ -188,7 +188,10 @@ else if(isOp(charRead)){
     
 }
         
-        }else error("Invalid character");
+        }else{
+            System.out.println("!Syntax Parse error");
+	System.out.printf("Error at (%d: %d): %s\n", nline, ntok,"Invalid character" );
+        }
 
 }
 }    
