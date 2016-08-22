@@ -101,22 +101,22 @@ import java.io.IOException;
 ////////////////
 //[class Rider]
 public class Lexer{
-// колонка   
-int ncol;
-//строка
-int nline;
-//позиция символ в колонке
-int ntok;
-String sym;
+
+String token;
 
 RegExp re;
+ /*   @param  void
+  @return   String
+  Что делает геттер токена
+*/
+    public String getToken() {
+        return token;
+    }
 
 /*конструктор
 */
     public Lexer() {
-        //ncol=0;
-        //nline=1;
-        //ntok=0;
+       
         
         re=new RegExp();
         
@@ -131,13 +131,7 @@ RegExp re;
 		case ')':  return true;   
     }
    return false; }
-//    @param msg String
-//    @return void
-//    Выводит сообщение о синтаксической ошибке в строке и колонке
-  public  void error(String msg) {
-	     System.out.println("!Syntax Parse error");
-	System.out.printf("Error at (%d: %d): %s\n", nline, ntok, msg);
-  }
+
 /*@param String lispExpression
   @return void
   Что делает:получает на вход строку прочитанную из фаила.
@@ -175,9 +169,9 @@ else if(re.test(String.valueOf(charRead),"[A-Z]") ){
     //...
     
 }
-else if(re.test(String.valueOf(charRead),"[a-z]\\!") ){
+else if(re.test(String.valueOf(charRead),"[a-z]") ){
     //...
-    
+    this.token=String.valueOf(charRead);
    
 }
 else if(charRead==' '){
@@ -200,20 +194,34 @@ else if(isOp(charRead)){
 ///////////////////
 
 ///////////////
+  class Parser{
+Lexer l;
+    public Parser(Lexer l) {
+        this.l=l;
+    }
+    public void out(){
+        System.out.println(l.getToken());
+    }
+      
+  }              
 //[class Solve]
  class Solve  {
     public Solve(){
     File f=new File("D:\\NetBeansProjects\\A_MyLisp\\src\\input.txt");
     FileRider fr=new FileRider(f,"cp1251");;
 BufferedReader bf=fr.getBuffered_reader();
-     Lexer r=new Lexer();
+     Lexer l=new Lexer();
+     Parser p=new Parser(l);
 
 try{
     int i=1;
 String line=bf.readLine();
 while(line!=null){
-    r.readSymbolAndRecogniseAndSetId(line,i);
+    l.readSymbolAndRecogniseAndSetId(line,i);
     line=bf.readLine();
+     p.out();
+  
+
     i++;
 }
 

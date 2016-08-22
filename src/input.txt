@@ -1,3 +1,3 @@
-<>Aexp ln A Z 10                     
-(exp  (ln (< t   10)))   
-<>(exp  (ln (+ t 10)))
+(d exp ln A Z 10 )                    
+(exp  (ln ( t   10)))   
+(d  (ln (+ t 10)))
