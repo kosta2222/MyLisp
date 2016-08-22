@@ -93,6 +93,11 @@ import java.io.IOException;
     public void setOp3(String op3) {
         this.op3 = op3;
     }
+
+    @Override
+    public String toString() {
+        return "Node{" + "kind=" + kind + ", value=" + value + ", op1=" + op1 + ", op2=" + op2 + ", op3=" + op3 + '}';
+    }
     
     
 }
@@ -103,6 +108,7 @@ import java.io.IOException;
 public class Lexer{
 
 String token;
+String kind;
 
 RegExp re;
  /*   @param  void
@@ -172,6 +178,7 @@ else if(re.test(String.valueOf(charRead),"[A-Z]") ){
 else if(re.test(String.valueOf(charRead),"[a-z]") ){
     //...
     this.token=String.valueOf(charRead);
+    this.kind="OPERACIYA";
    
 }
 else if(charRead==' '){
@@ -196,11 +203,20 @@ else if(isOp(charRead)){
 ///////////////
   class Parser{
 Lexer l;
+Node  n;
     public Parser(Lexer l) {
         this.l=l;
+        n=new Node();
     }
     public void out(){
-        System.out.println(l.getToken());
+        System.out.println(n.toString());
+    }
+    public void makeAbstractTree(){
+        if(l.kind.equals("OPERACIYA")){
+               n.setKind("OPERACIYA");
+            n.setOp1(l.token);
+        }
+        
     }
       
   }              
@@ -218,6 +234,7 @@ try{
 String line=bf.readLine();
 while(line!=null){
     l.readSymbolAndRecogniseAndSetId(line,i);
+    p.makeAbstractTree();
     line=bf.readLine();
      p.out();
   
