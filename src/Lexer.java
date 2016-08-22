@@ -3,6 +3,7 @@
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.util.StringTokenizer;
 //[/packages]
 /////////////
 //////////////
@@ -171,14 +172,14 @@ if(re.test(String.valueOf(charRead),"^\\d+$") ||re.test(String.valueOf(charRead)
     
 }
 //<принадлежит  к Индификатору >
-else if(re.test(String.valueOf(charRead),"[A-Z]") ){
+else if(re.test(String.valueOf(charRead),"[a-z]") ){
     //...
     
 }
-else if(re.test(String.valueOf(charRead),"[a-z]") ){
+else if(re.test(String.valueOf(charRead),"[A-Z]") ){
     //...
-    this.token=String.valueOf(charRead);
-    this.kind="OPERACIYA";
+//    this.token=String.valueOf(charRead);
+//    this.kind="OPERACIYA";
    
 }
 else if(charRead==' '){
@@ -192,6 +193,8 @@ else if(isOp(charRead)){
         }else{
             System.out.println("!Syntax Parse error");
 	System.out.printf("Error at (%d: %d): %s\n", nline, ntok,"Invalid character" );
+//        выход-код 1,ошибка синтаксического анализатора
+        System.exit(1);
         }
 
 }
@@ -202,22 +205,37 @@ else if(isOp(charRead)){
 
 ///////////////
   class Parser{
-Lexer l;
-Node  n;
-    public Parser(Lexer l) {
-        this.l=l;
-        n=new Node();
-    }
-    public void out(){
-        System.out.println(n.toString());
-    }
-    public void makeAbstractTree(){
-        if(l.kind.equals("OPERACIYA")){
-               n.setKind("OPERACIYA");
-            n.setOp1(l.token);
-        }
+ public   void eval(String t,int nline){
+ String expression="";
+int length=t.length();
+char fst=t.charAt(0),lst=t.charAt(length-1);
+if(fst=='(' && lst==')')
+ expression= t.substring(1,length-1);
+else {
+  System.out.println("Parse error");
+	System.out.printf("Error at (%d: %d): %s\n", nline,"Oshibka razbora skobok" );
+//        выход-код 2,ошибка парсера
+        System.exit(2);  
+}
+StringTokenizer st=new StringTokenizer(t,"+-*/^u ",true);
+while(st.hasMoreTokens()){
+    String token=st.nextToken();
+    if(token.equals("quote")){
         
-    }
+    }else if(token.equals("if")){
+        
+    }else {
+  System.out.println("Parse error");
+	System.out.printf("Error at (%d: %d): %s\n", nline,"Oshibka razbora virajeniya" );
+//        выход-код 3,ошибка парсера
+        System.exit(3);  
+}
+}
+
+}
+        
+        
+    
       
   }              
 //[class Solve]
@@ -227,16 +245,15 @@ Node  n;
     FileRider fr=new FileRider(f,"cp1251");;
 BufferedReader bf=fr.getBuffered_reader();
      Lexer l=new Lexer();
-     Parser p=new Parser(l);
+     Parser p=new Parser();
 
 try{
     int i=1;
 String line=bf.readLine();
 while(line!=null){
     l.readSymbolAndRecogniseAndSetId(line,i);
-    p.makeAbstractTree();
     line=bf.readLine();
-     p.out();
+    
   
 
     i++;
