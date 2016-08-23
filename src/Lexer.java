@@ -3,106 +3,14 @@
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.StringTokenizer;
 //[/packages]
 /////////////
 //////////////
 
-//[class Node]
-/* ласс Node
-  „то за класс:ƒолжен хранит абстрактное синтаксическое дерево
-  ƒата:21 08 16
-*/
- class Node{
-    private String kind;
-    private String value;
-    private String op1;
-    private String op2;
-    private String op3;
-/*конструктор
-*/
-    public Node() {
-        
-    }
 
-    /**
-     * @return the kind
-     */
-    public String getKind() {
-        return kind;
-    }
-
-    /**
-     * @param kind the kind to set
-     */
-    public void setKind(String kind) {
-        this.kind = kind;
-    }
-
-    /**
-     * @return the value
-     */
-    public String getValue() {
-        return value;
-    }
-
-    /**
-     * @param value the value to set
-     */
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    /**
-     * @return the op1
-     */
-    public String getOp1() {
-        return op1;
-    }
-
-    /**
-     * @param op1 the op1 to set
-     */
-    public void setOp1(String op1) {
-        this.op1 = op1;
-    }
-
-    /**
-     * @return the op2
-     */
-    public String getOp2() {
-        return op2;
-    }
-
-    /**
-     * @param op2 the op2 to set
-     */
-    public void setOp2(String op2) {
-        this.op2 = op2;
-    }
-
-    /**
-     * @return the op3
-     */
-    public String getOp3() {
-        return op3;
-    }
-
-    /**
-     * @param op3 the op3 to set
-     */
-    public void setOp3(String op3) {
-        this.op3 = op3;
-    }
-
-    @Override
-    public String toString() {
-        return "Node{" + "kind=" + kind + ", value=" + value + ", op1=" + op1 + ", op2=" + op2 + ", op3=" + op3 + '}';
-    }
-    
-    
-}
-//[/class Node]
 ///////////////
 ////////////////
 //[class Rider]
@@ -128,7 +36,7 @@ RegExp re;
         re=new RegExp();
         
     }
-    public boolean isOp(char ch){
+    public static boolean isOp(char ch){
      switch (ch) {
 		case '+':  return true;
 		case '-':  return true;
@@ -200,14 +108,22 @@ else if(isOp(charRead)){
 }
 }    
 }
-////[/class Rider]
+////[/class Lisp]
 ///////////////////
 
 ///////////////
-  class Parser{
+  class LISP{
  public   void eval(String t,int nline){
+    RegExp re=new RegExp();
+//    стек дл€ выражений в префиксной нотации
+    Deque<Double> stack=new ArrayDeque<>();
+//
+//  
+ String term="";    
  String expression="";
+// длина Lisp выражеи€ со скобками
 int length=t.length();
+//
 char fst=t.charAt(0),lst=t.charAt(length-1);
 if(fst=='(' && lst==')')
  expression= t.substring(1,length-1);
@@ -217,12 +133,43 @@ else {
 //        выход-код 2,ошибка парсера
         System.exit(2);  
 }
-StringTokenizer st=new StringTokenizer(t,"+-*/^u ",true);
+StringTokenizer st=new StringTokenizer(expression,"+-*/^u ",true);
+//
+//токенизер
 while(st.hasMoreTokens()){
-    String token=st.nextToken();
-    if(token.equals("quote")){
+    String sTmp=st.nextToken().trim();
+    if(Lexer.isOp(sTmp.charAt(0))){
+//        если лексема оператор запоминаем ее в терм
         
-    }else if(token.equals("if")){
+    term=sTmp;    
+    }else if(re.test(sTmp,"\\d|\\.")){
+//(рассматриваем префиксную форму) если число -ложим в стек
+   double dA=Double.parseDouble(sTmp);
+//   
+//   
+   stack.push(dA);
+//   если в стеке 2 числа-извлекаем и вычисл€ем в зависимости от запомниного term
+   if(stack.size()==2){
+       double dAStack,dBStack;
+       dAStack=stack.pop();
+       dBStack=stack.pop();
+       switch(term){
+           case "+": dAStack+=dBStack;break;
+           case "-": dAStack-=dBStack;break;
+           case "*": dAStack*=dBStack;break;
+           case "/": dAStack /=dBStack;break;
+           default:System.out.println("Parse error");
+	System.out.printf("Error at (%d: %d): %s\n", nline,"Oshibka razbora virajeniya-nedopustimaya operasiya" );
+//        выход-код 5,ошибка парсера
+        System.exit(5);       
+       }
+       
+   }else{
+  System.out.println("Parse error");
+	System.out.printf("Error at (%d: %d): %s\n", nline,"Oshibka razbora virajeniya-bollee dvuh operatorov" );
+//        выход-код 4,ошибка парсера
+        System.exit(4);       
+   }
         
     }else {
   System.out.println("Parse error");
@@ -231,7 +178,7 @@ while(st.hasMoreTokens()){
         System.exit(3);  
 }
 }
-
+//конец токенизер
 }
         
         
@@ -245,7 +192,7 @@ while(st.hasMoreTokens()){
     FileRider fr=new FileRider(f,"cp1251");;
 BufferedReader bf=fr.getBuffered_reader();
      Lexer l=new Lexer();
-     Parser p=new Parser();
+     
 
 try{
     int i=1;
