@@ -112,9 +112,13 @@ else if(isOp(charRead)){
 ///////////////////
 
 ///////////////
-  class LISP{
- public   void eval(String t,int nline){
+  class LispMachine{
+ public   double eval(String t,int nline){
+    
     RegExp re=new RegExp();
+//переменные дл€ вычислени€ сохраненых ƒабл 
+ double dAStack=0,dBStack=0;   
+//    
 //    стек дл€ выражений в префиксной нотации
     Deque<Double> stack=new ArrayDeque<>();
 //
@@ -123,13 +127,15 @@ else if(isOp(charRead)){
  String expression="";
 // длина Lisp выражеи€ со скобками
 int length=t.length();
+
 //
 char fst=t.charAt(0),lst=t.charAt(length-1);
 if(fst=='(' && lst==')')
  expression= t.substring(1,length-1);
 else {
+//    парсе-делать граматический разбор
   System.out.println("Parse error");
-	System.out.printf("Error at (%d: %d): %s\n", nline,"Oshibka razbora skobok" );
+	System.out.printf("Error at (%d: ): %s\n", nline,"Oshibka razbora skobok" );
 //        выход-код 2,ошибка парсера
         System.exit(2);  
 }
@@ -150,7 +156,6 @@ while(st.hasMoreTokens()){
    stack.push(dA);
 //   если в стеке 2 числа-извлекаем и вычисл€ем в зависимости от запомниного term
    if(stack.size()==2){
-       double dAStack,dBStack;
        dAStack=stack.pop();
        dBStack=stack.pop();
        switch(term){
@@ -159,26 +164,28 @@ while(st.hasMoreTokens()){
            case "*": dAStack*=dBStack;break;
            case "/": dAStack /=dBStack;break;
            default:System.out.println("Parse error");
-	System.out.printf("Error at (%d: %d): %s\n", nline,"Oshibka razbora virajeniya-nedopustimaya operasiya" );
+	System.out.printf("Error at (%d: ): %s\n", nline,"Oshibka razbora virajeniya-nedopustimaya operasiya" );
 //        выход-код 5,ошибка парсера
         System.exit(5);       
        }
        
    }else{
   System.out.println("Parse error");
-	System.out.printf("Error at (%d: %d): %s\n", nline,"Oshibka razbora virajeniya-bollee dvuh operatorov" );
+	System.out.printf("Error at (%d: ): %s\n", nline,"Oshibka razbora virajeniya-bollee dvuh operatorov" );
 //        выход-код 4,ошибка парсера
         System.exit(4);       
    }
         
     }else {
   System.out.println("Parse error");
-	System.out.printf("Error at (%d: %d): %s\n", nline,"Oshibka razbora virajeniya" );
+	System.out.printf("Error at (%d: ): %s\n", nline,"Oshibka razbora virajeniya" );
 //        выход-код 3,ошибка парсера
         System.exit(3);  
 }
 }
 //конец токенизер
+//
+return dAStack;
 }
         
         
@@ -192,6 +199,7 @@ while(st.hasMoreTokens()){
     FileRider fr=new FileRider(f,"cp1251");;
 BufferedReader bf=fr.getBuffered_reader();
      Lexer l=new Lexer();
+     LispMachine lm=new LispMachine();
      
 
 try{
@@ -199,7 +207,9 @@ try{
 String line=bf.readLine();
 while(line!=null){
     l.readSymbolAndRecogniseAndSetId(line,i);
+    System.out.println(lm.eval(line, i));
     line=bf.readLine();
+    
     
   
 
